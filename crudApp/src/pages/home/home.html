@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      <ion-item class="item item-trns text-center">
+          <b>My Music List </b>
+        <ion-avatar item-end *ngIf="afAuth.authState | async">
+          <img src={{currentUser.photoURL}} (click)="showOptions()">
+        </ion-avatar>
+      </ion-item>     
+    </ion-title>
+    <button [navPush]="friendsPage">Friends</button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <div *ngIf="afAuth.authState | async as user; else showLogin">
+        <h1>Hello {{ user.displayName }}!</h1>
+        <ion-list>
+          <div *ngFor="let song of songs | async as cancion">
+          <ion-item *ngIf="user.uid == song.uid">
+            <ion-card>
+              <ion-card-content>
+                  <ion-avatar>
+                      <img src={{song.userPhoto}}>
+                      <b>{{ song.author }}</b>
+                  </ion-avatar>
+                  {{ song.title }}
+              </ion-card-content>
+              <ion-item>
+                  <button ion-button clear item-start (click)="likes(song.id, song.songLikes)">Like</button>
+                  <button ion-button clear item-end (click)="removeSong(song.id, song.uid)">Delete</button>
+                  <button ion-button clear item-end (click)="updateSong(song.id, song.title, song.author,song.url, song.uid)">Update</button>
+                  <button ion-button clear item-end icon-only (click)="changePrivacity(song.id, song.uid, song.isPublic)">
+                      <ion-icon *ngIf="song.isPublic" name="eye"></ion-icon>
+                      <ion-icon *ngIf="!song.isPublic" name="eye-off"></ion-icon>
+                  </button>
+                  <a href={{song.songUrl}} target="_blank">
+                      <button ion-button clear item-end>
+                      <ion-icon name="logo-youtube"></ion-icon>
+                    </button>
+                    </a>
+                  <p item-start>{{song.songLikes}}</p>
+            </ion-item>
+            </ion-card>
+          </ion-item>
+          <ion-item *ngIf="(user.uid != song.uid) && (song.isPublic)">
+              <ion-card>
+                  <ion-card-content>
+                      <ion-avatar>
+                          <img src={{song.userPhoto}}>
+                          <b>{{ song.author }}</b>
+                      </ion-avatar>
+                      {{ song.title }}
+                  </ion-card-content>
+                  <ion-item>
+                      <button ion-button clear item-start (click)="likes(song.id, song.songLikes)">Like</button>
+                      <p item-start>{{song.songLikes}}</p>
+                      <button ion-button clear item-end (click)="addtoMyList(song.title, song.author)">Add To My List</button>
+                      <a href={{song.songUrl}} target="_blank">
+                        <button ion-button clear item-end>
+                        <ion-icon name="logo-youtube"></ion-icon>
+                      </button>
+                      </a>
+                    </ion-item>
+                </ion-card>
+          </ion-item>
+          </div>  
+        </ion-list>
+        <ion-fab right bottom style="position: fixed; padding-right: 10px;">
+          <button ion-fab  (click)="addSong()">
+            <ion-icon name="add" ></ion-icon>
+          </button>
+        </ion-fab>
+      </div>
+      <ng-template #showLogin>
+        <h1 text-center>Please login.</h1>
+        <button ion-button color="danger"  full (click)="login()" icon-right>
+          <ion-icon name="logo-googleplus"></ion-icon>
+          Login with Google
+        </button>
+      </ng-template>
+</ion-content>

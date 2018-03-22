@@ -1,0 +1,32 @@
+<!--
+  Generated template for the FriendsPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>
+      Friends
+    </ion-title>
+    <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+      <ion-item *ngFor="let user of users">
+        <ion-card>
+          <ion-card-content>
+              <ion-avatar>
+                  <img src={{user.photoURL}}>
+                  <b>{{ user.displayName }}</b>
+              </ion-avatar>
+          </ion-card-content>
+        </ion-card>
+      </ion-item>
+  </ion-list>
+
+</ion-content>
